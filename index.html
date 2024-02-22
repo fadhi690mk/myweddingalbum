@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Gallery with Music</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+  }
+  
+  .gallery-container {
+    width: 80%;
+    margin: 10% auto;
+    position: relative;
+  }
+  
+  .gallery {
+    white-space: nowrap;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .gallery img {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 15px;
+    margin: 10px 0;
+    transition: transform 0.4s ease; /* Transition effect added */
+  }
+
+  .bottom-box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px; /* Adjust height as needed */
+    background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 2.5)); /* Gradient opacity 0 to 50 from top to bottom */
+    z-index: 998; /* Place it behind the button */
+  }
+  
+  .control-btn {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #ffffff;
+    z-index: 999;
+}
+  
+
+</style>
+</head>
+<body>
+
+<div class="gallery-container">
+  <div class="gallery" id="photoGallery">
+    <!-- Images will be dynamically added here -->
+  </div>
+</div>
+
+<div class="bottom-box"></div>
+
+<button class="control-btn" onclick="toggleMusic()"><img src="music-logo.png" width="60px" alt="img" srcset=""></button>
+<img src="music-logo.jpg" width="100%" alt="img" srcset="">
+<audio id="background-music" loop>
+  <source src="bgm.mp3" type="audio/mp3">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+  let musicPlaying = false;
+  const backgroundMusic = document.getElementById('background-music');
+  const photoGallery = document.getElementById('photoGallery');
+  let lastScrollTop = 0;
+
+  // Fetch JSON data and create image elements
+  fetch('list.json')
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(item => {
+        const img = document.createElement('img');
+        img.src = item.image_url;
+        img.alt = `Photo ${item.index}`;
+        photoGallery.appendChild(img);
+      });
+    })
+    .catch(error => console.error('Error fetching JSON:', error));
+
+  // Add scroll event listener
+  window.addEventListener('scroll', function() {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    const images = document.querySelectorAll('.gallery img');
+    images.forEach(img => {
+      img.style.transform = `translateY(-${st * 0.2}px)`; // Adjust the factor for desired effect
+    });
+  });
+
+  function toggleMusic() {
+    if (musicPlaying) {
+      backgroundMusic.pause();
+    } else {
+      backgroundMusic.play();
+    }
+    musicPlaying = !musicPlaying;
+  }
+</script>
+
+</body>
+</html>

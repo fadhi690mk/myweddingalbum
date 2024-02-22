@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  
+  .gallery-container {
+    width: 80%;
+    margin: 10% auto;
+    position: relative;
+  }
+  
+  .gallery {
+    white-space: nowrap;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+  
+  .gallery img {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 15px;
+    margin: 10px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="gallery-container">
+  <div class="gallery"></div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const category = urlParams.get('category');
+
+  fetch('list.json')
+    .then(response => response.json())
+    .then(data => {
+      const galleryContainer = document.querySelector('.gallery');
+
+      data.forEach(item => {
+        if (item.categories.includes(parseInt(category))) {
+          const img = document.createElement('img');
+          img.src = item.image_url;
+          img.alt = `Photo ${item.index}`;
+          galleryContainer.appendChild(img);
+        }
+      });
+    })
+    .catch(error => console.error('Error fetching data:', error));
+</script>
+
+</body>
+</html>
